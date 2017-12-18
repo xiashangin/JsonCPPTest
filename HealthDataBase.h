@@ -1,13 +1,13 @@
 #pragma once
 #include "healthData.h"
 
+#define TYPE_UNKNOWN	149
 #define TYPE_PPG		150
 #define TYPE_ECG		151
 #define TYPE_SPO2		152
 #define TYPE_GSR		153
 #define TYPE_TEMP		154
 #define TYPE_BP			155
-#define TYPE_UNKNOWN	149
 
 
 #include <memory>
@@ -20,7 +20,7 @@ public:
 	~CHealthDataBase();
 
 	void * getHealthData();
-	int getDataType();
+	int  getDataType();
 	void setDataType(const int iType);
 	void setHealthData(void *lpHealthData);
 private:

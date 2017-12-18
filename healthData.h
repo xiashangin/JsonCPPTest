@@ -35,93 +35,93 @@ typedef std::shared_ptr<std::vector< PDataListList >> PDataListListList;
 
 
 typedef struct _FreqAndValue {
-	PData freq;
-	PDataList listValue;
+	PData m_freq;
+	PDataList m_listValue;
 	_FreqAndValue(){
-		freq = std::make_shared<std::string>();
-		listValue = std::make_shared<std::vector<PData> >();
+		m_freq = std::make_shared<std::string>();
+		m_listValue = std::make_shared<std::vector<PData> >();
 	}
 }freqAndValue;
 
 typedef struct _TimeAndId {
-	PData pdTime;
-	PData pdPersonId;
+	PData m_pdTime;
+	PData m_pdPersonId;
 
 	_TimeAndId(){
-		pdTime = std::make_shared<std::string>();
-		pdPersonId = std::make_shared<std::string>();
+		m_pdTime = std::make_shared<std::string>();
+		m_pdPersonId = std::make_shared<std::string>();
 	}
 }timeAndId;
 
 //脉搏波
 typedef struct _PPG {
-	timeAndId timeId;
+	timeAndId m_timeId;
 
-	freqAndValue fv;	//采样频率和当前采集的数据集合
-	PData pdHR;
+	freqAndValue m_fv;	//采样频率和当前采集的数据集合
+	PData m_pdHR;
 
 	_PPG(){
-		pdHR = std::make_shared<std::string>();
+		m_pdHR = std::make_shared<std::string>();
 	}
 }pdPPG;
 
 //心电图
 typedef struct _ECG {
-	timeAndId timeId;
+	timeAndId m_timeId;
 
-	freqAndValue fv;	//采样频率和当前采集的数据集合
-	PData pdHR;
+	freqAndValue m_fv;	//采样频率和当前采集的数据集合
+	PData m_pdHR;
 
 	_ECG() {
-		pdHR = std::make_shared<std::string>();
+		m_pdHR = std::make_shared<std::string>();
 	}
 }pdECG;
 
 //血氧
 typedef struct _SPO2 {
-	timeAndId timeId;
+	timeAndId m_timeId;
 
-	freqAndValue fv;	//采样频率和当前采集的数据集合
-	PData pdHR;
-	PData pdSP;
+	freqAndValue m_fv;	//采样频率和当前采集的数据集合
+	PData m_pdHR;
+	PData m_pdSP;
 
 	_SPO2() {
-		pdHR = std::make_shared<std::string>();
-		pdSP = std::make_shared<std::string>();
+		m_pdHR = std::make_shared<std::string>();
+		m_pdSP = std::make_shared<std::string>();
 	}
 }pdSPO2;
 
 //皮电
 typedef struct _GSR {
-	timeAndId timeId;
+	timeAndId m_timeId;
 
-	freqAndValue fv;	//采样频率和当前采集的数据集合
+	freqAndValue m_fv;	//采样频率和当前采集的数据集合
 }pdGSR;
 
 //体温
 typedef struct _TEMP {
-	timeAndId timeId;
+	timeAndId m_timeId;
 
-	PData pdHeat;
-	PData pdIR;
+	PData m_pdHeat;
+	PData m_pdIR;
 
 	_TEMP() {
-		pdHeat = std::make_shared<std::string>();
-		pdIR = std::make_shared<std::string>();
+		m_pdHeat = std::make_shared<std::string>();
+		m_pdIR = std::make_shared<std::string>();
 	}
 }pdTEMP;
 
 //血压
 typedef struct _BP {
-	timeAndId timeId;
+	timeAndId m_timeId;
 
-	PData pdH;
-	PData pdL;
-	PData pdPulse;
+	PData m_pdH;
+	PData m_pdL;
+	PData m_pdPulse;
 
 	_BP() {
-		pdH = std::make_shared<std::string>();
-		pdL = std::make_shared<std::string>();
-		pdPulse = std::make_shared<std::string>();
+		m_pdH = std::make_shared<std::string>();
+		m_pdL = std::make_shared<std::string>();
+		m_pdPulse = std::make_shared<std::string>();
 	}
 }pdBP;

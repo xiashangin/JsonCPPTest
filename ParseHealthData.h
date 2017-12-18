@@ -7,9 +7,7 @@
 #define PARSE_INVALIDJSON		171
 #define PARSE_UNKNOWNERR		172
 #define PARSE_INVALIDTYPE		173
-#define PARSE_KEYNOTEXIST		170
-
-
+#define PARSE_KEYNOTEXIST		174
 
 class CParseHealthData
 {
@@ -19,9 +17,11 @@ public:
 
 	//解析json文件
 	int parseFromFile(const std::string & strFileName);
+
 	//解析json字符串
 	int parseFromString(const std::string & strJsonString);
-	//读取文件到字符串，文件不存在等错误返回空字符串。
+
+	//读取文件到字符串，文件不存在等错误返回空字符串
 	std::string readFileIntoString(const char * filename);
 
 	//获取解析的json文件的数据类型
@@ -41,7 +41,6 @@ private:
 	bool parseGSR(Json::Value &jsonValue, pdGSR & gsrData);
 	bool parseTEMP(Json::Value &jsonValue, pdTEMP & tempData);
 	bool parseBP(Json::Value &jsonValue, pdBP & bpData);
-
 
 	CHealthDataBase m_heathData;
 };
