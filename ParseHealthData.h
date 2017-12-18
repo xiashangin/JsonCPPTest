@@ -1,13 +1,15 @@
 #pragma once
-#include "healthData.h"
+#include "HealthDataBase.h"
 #include <json/json.h>
 
-#define TYPE_PPG	150
-#define TYPE_ECG	151
-#define TYPE_SPO2	152
-#define TYPE_GSR	153
-#define TYPE_TEMP	154
-#define TYPE_BP		155
+#define PARSE_OK				0
+#define PARSE_FILENOTEXIST		170
+#define PARSE_INVALIDJSON		171
+#define PARSE_UNKNOWNERR		172
+#define PARSE_INVALIDTYPE		173
+#define PARSE_KEYNOTEXIST		170
+
+
 
 class CParseHealthData
 {
@@ -16,14 +18,20 @@ public:
 	~CParseHealthData();
 
 	//解析json文件
-	bool parseFromFile(const std::string & strFileName, int iDataType, void *lpOutResult);
+	int parseFromFile(const std::string & strFileName);
 	//解析json字符串
-	bool parseFromString(const std::string & strJsonString, int iDataType, void *lpOutResult);
+	int parseFromString(const std::string & strJsonString);
 	//读取文件到字符串，文件不存在等错误返回空字符串。
 	std::string readFileIntoString(const char * filename);
+
+	//获取解析的json文件的数据类型
+	int getDataType();
+	//获取解析结果
+	void *getHealthData();
 	
 private:
-	bool parseJson(Json::Value & jsonRoot, int iDataType, void *lpOutResult);
+	bool parseJson(Json::Value & jsonRoot);
+	bool __parseJson(Json::Value & jsonRoot, int iDataType, void *lpOutResult);
 	bool openFile(const char * lpStrFileName);
 	bool getFreqVal(Json::Value &jsonValue, freqAndValue & fv, const char * strRoot);
 	bool getTimeId(Json::Value &jsonValue, timeAndId & timeId);
@@ -34,6 +42,7 @@ private:
 	bool parseTEMP(Json::Value &jsonValue, pdTEMP & tempData);
 	bool parseBP(Json::Value &jsonValue, pdBP & bpData);
 
-	std::string int2str(const int &int_temp);
+
+	CHealthDataBase m_heathData;
 };
 

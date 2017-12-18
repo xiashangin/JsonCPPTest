@@ -34,8 +34,6 @@ typedef std::shared_ptr<std::vector< PDataListList >> PDataListListList;
 #define PERSONID		"id"
 
 
-
-
 typedef struct _FreqAndValue {
 	PData freq;
 	PDataList listValue;

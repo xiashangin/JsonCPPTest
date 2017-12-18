@@ -2,7 +2,7 @@
 
 #include <fstream>
 #include <cstring>
-
+#include <memory>
 
 CParseHealthData::CParseHealthData()
 {
@@ -13,18 +13,17 @@ CParseHealthData::~CParseHealthData()
 {
 }
 
-bool CParseHealthData::parseFromFile(const std::string & strFileName, int iDataType, void *lpOutResult)
-{	
+int CParseHealthData::parseFromFile(const std::string & strFileName)
+{
 	std::ifstream ifs; //��׼������
 	ifs.open(strFileName.c_str(), std::ifstream::binary);
 	if (!ifs.is_open())
 	{
 		std::cout << "open file " << strFileName << " failed!!!" << std::endl;
-		getchar();
-		return false;
+		return PARSE_FILENOTEXIST;
 	}
 	std::cout << "open file " << strFileName << " success!!!" << std::endl;
-	
+
 	Json::CharReaderBuilder builder;
 	Json::Value jsonRoot;
 	builder["collectComments"] = false;
@@ -33,16 +32,16 @@ bool CParseHealthData::parseFromFile(const std::string & strFileName, int iDataT
 	if (!is_ok) //��ifs�ж�ȡ���ݵ�jsonRoot
 	{
 		std::cout << "parse Json file failed!!!" << std::endl;
-		getchar();
-		return false;
+		return PARSE_INVALIDJSON;
 	}
 	std::cout << "parse json file success!!!" << std::endl;
 
-	bool bRlt = parseJson(jsonRoot, iDataType, lpOutResult);
-	return bRlt;
+	if (parseJson(jsonRoot))
+		return PARSE_OK;
+	else
+		return PARSE_KEYNOTEXIST;
 }
-
-bool CParseHealthData::parseFromString(const std::string & strJsonString, int iDataType, void *lpOutResult)
+int CParseHealthData::parseFromString(const std::string & strJsonString)
 {
 	Json::CharReaderBuilder builder;
 	Json::CharReader* reader(builder.newCharReader());
@@ -53,14 +52,15 @@ bool CParseHealthData::parseFromString(const std::string & strJsonString, int iD
 	if (!is_ok || errs.size() > 0) //��ifs�ж�ȡ���ݵ�jsonRoot
 	{
 		std::cout << "parse Json file failed!!! errstr = " << errs << std::endl;
-		getchar();
-		return false;
+		return PARSE_INVALIDJSON;
 	}
 	std::cout << "parse json file success!!!" << std::endl;
-	bool bRlt = parseJson(jsonRoot, iDataType, lpOutResult);
-	return bRlt;
+	
+	if (parseJson(jsonRoot))
+		return PARSE_OK;
+	else
+		return PARSE_KEYNOTEXIST;
 }
-
 std::string CParseHealthData::readFileIntoString(const char * filename)
 {
 	std::ifstream ifile(filename);
@@ -70,8 +70,88 @@ std::string CParseHealthData::readFileIntoString(const char * filename)
 		buf.put(ch);
 	return buf.str();
 }
+int CParseHealthData::getDataType()
+{
+	return m_heathData.getDataType();
+}
+void * CParseHealthData::getHealthData()
+{
+	return m_heathData.getHealthData();
+}
 
-bool CParseHealthData::parseJson(Json::Value & jsonRoot, int iDataType, void *lpOutResult)
+bool CParseHealthData::parseJson(Json::Value & jsonRoot)
+{
+	bool bRlt = true;
+	if (jsonRoot[PPG].isObject())
+	{
+		pdPPG ppgData;
+		bRlt = __parseJson(jsonRoot, TYPE_PPG, &ppgData);
+		if (bRlt)
+		{
+			m_heathData.setDataType(TYPE_PPG);
+			m_heathData.setHealthData(&ppgData);
+		}
+	}
+	else if (jsonRoot[ECG].isObject())
+	{
+		pdECG ecgData;
+		bRlt = __parseJson(jsonRoot, TYPE_ECG, &ecgData);
+		if (bRlt)
+		{
+			m_heathData.setDataType(TYPE_ECG);
+			m_heathData.setHealthData(&ecgData);
+		}
+	}
+	else if (jsonRoot[SPO2].isObject())
+	{
+		pdSPO2 spo2Data;
+		bRlt = __parseJson(jsonRoot, TYPE_SPO2, &spo2Data);
+		if (bRlt)
+		{
+			m_heathData.setDataType(TYPE_SPO2);
+			m_heathData.setHealthData(&spo2Data);
+		}
+	}
+	else if (jsonRoot[GSR].isObject())
+	{
+		pdGSR gsrData;
+		bRlt = __parseJson(jsonRoot, TYPE_GSR, &gsrData);
+		if (bRlt)
+		{
+			m_heathData.setDataType(TYPE_GSR);
+			m_heathData.setHealthData(&gsrData);
+		}
+	}
+	else if (jsonRoot[TEMP].isObject())
+	{
+		pdTEMP tempData;
+		bRlt = __parseJson(jsonRoot, TYPE_TEMP, &tempData);
+		if (bRlt)
+		{
+			m_heathData.setDataType(TYPE_TEMP);
+			m_heathData.setHealthData(&tempData);
+		}
+	}
+	else if (jsonRoot[BP].isObject())
+	{
+		pdBP bpData;
+		bRlt = __parseJson(jsonRoot, TYPE_BP, &bpData);
+		if (bRlt)
+		{
+			m_heathData.setDataType(TYPE_BP);
+			m_heathData.setHealthData(&bpData);
+		}
+	}
+	else
+	{
+		m_heathData.setDataType(TYPE_UNKNOWN);
+		std::string strErr = "unknown data type-->";
+		strErr.append(jsonRoot.getMemberNames()[0]);
+		m_heathData.setHealthData((void *)strErr.c_str());
+	}
+	return bRlt;
+}
+bool CParseHealthData::__parseJson(Json::Value & jsonRoot, int iDataType, void *lpOutResult)
 {
 	bool bRlt = true;
 	switch (iDataType)
@@ -168,7 +248,6 @@ bool CParseHealthData::parseJson(Json::Value & jsonRoot, int iDataType, void *lp
 	}
 	return bRlt;
 }
-
 bool CParseHealthData::openFile(const char * lpStrFileName)
 {
 	std::ifstream ifs; //��׼������
@@ -182,7 +261,6 @@ bool CParseHealthData::openFile(const char * lpStrFileName)
 	std::cout << "open file " << lpStrFileName << " success!!!" << std::endl;
 	return true;
 }
-
 
 bool CParseHealthData::getFreqVal(Json::Value &jsonValue, freqAndValue & fv, const char * strRoot)
 {
@@ -297,7 +375,6 @@ bool CParseHealthData::parseGSR(Json::Value &jsonValue, pdGSR & gsrData)
 
 	return bRlt;
 }
-
 bool CParseHealthData::parseTEMP(Json::Value &jsonValue, pdTEMP & tempData)
 {
 	bool bRlt = getTimeId(jsonValue, tempData.timeId);
@@ -348,11 +425,4 @@ bool CParseHealthData::parseBP(Json::Value &jsonValue, pdBP & bpData)
 	return bRlt;
 }
 
-std::string CParseHealthData::int2str(const int &int_temp)
-{
-	std::string str;
-	std::stringstream st;
-	st << int_temp;
-	st >> str;
-	return str;
-}
+
