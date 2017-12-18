@@ -36,10 +36,15 @@ int CParseHealthData::parseFromFile(const std::string & strFileName)
 	}
 	std::cout << "parse json file success!!!" << std::endl;
 
-	if (parseJson(jsonRoot))
+	//m_heathData.clearHealthData();
+	if(parseDataGroup(jsonRoot))
 		return PARSE_OK;
 	else
 		return PARSE_KEYNOTEXIST;
+	//if (parseJson(jsonRoot))
+	//	return PARSE_OK;
+	//else
+	//	return PARSE_KEYNOTEXIST;
 }
 int CParseHealthData::parseFromString(const std::string & strJsonString)
 {
@@ -56,6 +61,7 @@ int CParseHealthData::parseFromString(const std::string & strJsonString)
 	}
 	std::cout << "parse json file success!!!" << std::endl;
 	
+
 	if (parseJson(jsonRoot))
 		return PARSE_OK;
 	else
@@ -72,11 +78,23 @@ std::string CParseHealthData::readFileIntoString(const char * filename)
 }
 int CParseHealthData::getDataType()
 {
-	return m_heathData.getDataType();
+	int iDataType = m_heathData.getDataType();
+	return iDataType;
 }
 void * CParseHealthData::getHealthData()
 {
 	return m_heathData.getHealthData();
+}
+
+bool CParseHealthData::parseDataGroup(Json::Value & jsonRoot)
+{
+	for (int i = 0; i < jsonRoot.size(); ++i)
+	{
+		std::cout << jsonRoot[0][PERSONID] << std::endl;
+		if (!parseJson(jsonRoot[i]))
+			return false;
+	}
+	return true;
 }
 
 bool CParseHealthData::parseJson(Json::Value & jsonRoot)
@@ -296,14 +314,14 @@ bool CParseHealthData::getTimeId(Json::Value &jsonValue, timeAndId & timeId)
 {
 	bool bRlt = true;
 
-	if (jsonValue[COLLECTTIME].isNull())		//采样时间
-	{
-		std::cout << "[" << COLLECTTIME << "]"
-			<< " is null" << std::endl;
-		bRlt = false;
-	}
-	else
-		*timeId.m_pdTime = jsonValue[COLLECTTIME].asString();
+	//if (jsonValue[COLLECTTIME].isNull())		//采样时间
+	//{
+	//	std::cout << "[" << COLLECTTIME << "]"
+	//		<< " is null" << std::endl;
+	//	bRlt = false;
+	//}
+	//else
+	//	*timeId.m_pdTime = jsonValue[COLLECTTIME].asString();
 
 	if (jsonValue[PERSONID].isNull())		//人员ID
 	{
@@ -414,13 +432,13 @@ bool CParseHealthData::parseBP(Json::Value &jsonValue, pdBP & bpData)
 	else
 		*bpData.m_pdL = jsonValue[BP][BP_L].asString();
 
-	if (jsonValue[BP][PULSE].isNull())		//脉搏心率值
+	if (jsonValue[BP][HR].isNull())		//脉搏心率值
 	{
-		std::cout << "[" << BP << "]" << "[" << PULSE << "]" << " is null" << std::endl;
+		std::cout << "[" << BP << "]" << "[" << HR << "]" << " is null" << std::endl;
 		bRlt = false;
 	}
 	else
-		*bpData.m_pdPulse = jsonValue[BP][PULSE].asString();
+		*bpData.m_pdHR = jsonValue[BP][HR].asString();
 
 	return bRlt;
 }

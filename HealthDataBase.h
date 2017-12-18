@@ -11,6 +11,7 @@
 
 
 #include <memory>
+#include <queue>
 std::string int2str(const int &int_temp);
 
 class CHealthDataBase
@@ -23,15 +24,18 @@ public:
 	int  getDataType();
 	void setDataType(const int iType);
 	void setHealthData(void *lpHealthData);
-private:
 
+	void clearHealthData();
+private:
 	pdPPG m_ppgData;
 	pdECG m_ecgData;
 	pdSPO2 m_spo2Data;
 	pdGSR m_gsrData;
 	pdTEMP m_tempData;
 	pdBP m_bpData;
+
 	int m_iType;
+	std::queue<int> m_parsedDataTypeQueue;
 	std::shared_ptr<std::string> m_strErr;
 };
 

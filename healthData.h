@@ -117,11 +117,11 @@ typedef struct _BP {
 
 	PData m_pdH;
 	PData m_pdL;
-	PData m_pdPulse;
+	PData m_pdHR;
 
 	_BP() {
 		m_pdH = std::make_shared<std::string>();
 		m_pdL = std::make_shared<std::string>();
-		m_pdPulse = std::make_shared<std::string>();
+		m_pdHR = std::make_shared<std::string>();
 	}
 }pdBP;

@@ -30,6 +30,7 @@ public:
 	void *getHealthData();
 	
 private:
+	bool parseDataGroup(Json::Value & jsonRoot);
 	bool parseJson(Json::Value & jsonRoot);
 	bool __parseJson(Json::Value & jsonRoot, int iDataType, void *lpOutResult);
 	bool openFile(const char * lpStrFileName);
