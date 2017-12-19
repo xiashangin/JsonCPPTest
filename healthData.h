@@ -36,7 +36,8 @@ typedef std::shared_ptr<std::vector< PDataListList >> PDataListListList;
 #define REPLY_PROBS		"probs"
 #define ECG_LENGTH		"length"
 #define ECG_VALUES		"values"
-
+#define ECG_STATUS		"state"
+#define ECG_INFO		"info"
 
 
 typedef struct _FreqAndValue {
@@ -138,6 +139,8 @@ typedef struct _BP {
 #define TYPES_NOISE			3		//‘Î…˘
 typedef struct _ECGRespond {
 	std::vector<double> m_vecProbs;
+	int m_iStatus;
+	std::string m_strInfo;
 
 	_ECGRespond(){
 		m_vecProbs = std::vector<double>(4, 0);

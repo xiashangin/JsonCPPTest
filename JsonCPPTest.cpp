@@ -18,8 +18,11 @@ void evHandler(int evType, std::string strOutResult)
 	if ((iDataType = parse.getDataType()) == TYPE_ECGREPLY)
 	{
 		pdECGRespond replyData = *(pdECGRespond *)parse.getHealthData();
-		for (int i = 0; i < replyData.m_vecProbs.size(); ++i)
-			std::cout << "[" << i << "]" << "-->" << replyData.m_vecProbs[i] << std::endl;
+		if (replyData.m_iStatus == 0)
+			for (int i = 0; i < replyData.m_vecProbs.size(); ++i)
+				std::cout << "[" << i << "]" << "-->" << replyData.m_vecProbs[i] << std::endl;
+		else
+			std::cout << "http reply err info --> " << replyData.m_strInfo << std::endl;
 	}
 }
 

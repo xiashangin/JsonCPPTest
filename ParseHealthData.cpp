@@ -483,7 +483,7 @@ bool CParseHealthData::parseBP(Json::Value &jsonValue, pdBP & bpData)
 bool CParseHealthData::parseECGRespond(Json::Value &jsonValue, pdECGRespond & ecgRespondData)
 {
 	bool bRlt = true;
-	Json::Value types = jsonValue["ecg"]["types"];
+	Json::Value types = jsonValue[ECG_HTTP][REPLY_TYPES];
 	Json::Value probes = jsonValue[ECG_HTTP][REPLY_PROBS];
 	if (types.isNull())		//采样值
 	{
@@ -499,6 +499,24 @@ bool CParseHealthData::parseECGRespond(Json::Value &jsonValue, pdECGRespond & ec
 	}
 	if (bRlt)
 	{
+		if (jsonValue[ECG_HTTP][ECG_STATUS].isNull())
+		{
+			std::cout << "[" << ECG_HTTP << "]" << "[" << ECG_STATUS << "]"
+				<< " is null" << std::endl;
+			bRlt = false;
+		}
+		else
+			ecgRespondData.m_iStatus = jsonValue[ECG_HTTP][ECG_STATUS].asInt();
+		
+		if (jsonValue[ECG_HTTP][ECG_INFO].isNull())
+		{
+			std::cout << "[" << ECG_HTTP << "]" << "[" << ECG_INFO << "]"
+				<< " is null" << std::endl;
+			bRlt = false;
+		}
+		else
+			ecgRespondData.m_strInfo = jsonValue[ECG_HTTP][ECG_INFO].asString();
+		
 		for(int i = 0; i < ecgRespondData.m_vecProbs.size(); ++i)
 		{
 			int type = types[i].asInt();
