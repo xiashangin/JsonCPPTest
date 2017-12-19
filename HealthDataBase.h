@@ -33,6 +33,13 @@ private:
 	pdTEMP m_tempData;
 	pdBP m_bpData;
 
+	std::queue<pdPPG>	m_ppgDataQueue;
+	std::queue<pdECG>	m_ecgDataQueue;
+	std::queue<pdSPO2>	m_spo2DataQueue;
+	std::queue<pdGSR>	m_gsrDataQueue;
+	std::queue<pdTEMP>	m_tempDataQueue;
+	std::queue<pdBP>	m_bpDataQueue;
+
 	int m_iType;
 	std::queue<int> m_parsedDataTypeQueue;
 	std::shared_ptr<std::string> m_strErr;

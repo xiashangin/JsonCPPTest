@@ -94,7 +94,7 @@ void * CParseHealthData::getHealthData()
 bool CParseHealthData::parseDataGroup(Json::Value & jsonRoot)
 {
 	//std::cout << jsonRoot.isArray() << std::endl;
-
+	m_heathData.clearHealthData();
 	if (!jsonRoot.isArray())
 	{
 		if (parseJson(jsonRoot))
@@ -113,6 +113,7 @@ bool CParseHealthData::parseDataGroup(Json::Value & jsonRoot)
 
 bool CParseHealthData::parseJson(Json::Value & jsonRoot)
 {
+
 	bool bRlt = true;
 	if (jsonRoot[PPG].isObject())
 	{
