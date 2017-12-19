@@ -42,7 +42,7 @@ private:
 	bool parseGSR(Json::Value &jsonValue, pdGSR & gsrData);
 	bool parseTEMP(Json::Value &jsonValue, pdTEMP & tempData);
 	bool parseBP(Json::Value &jsonValue, pdBP & bpData);
-
+	bool parseECGRespond(Json::Value &jsonValue, pdECGRespond & ecgRespondData);
 	CHealthDataBase m_heathData;
 };
 

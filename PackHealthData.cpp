@@ -18,12 +18,12 @@ int CPackHealthData::packECGData(const pdECG & ecgData, std::string & strOutResu
 	builder.settings_["indentation"] = "";
 	std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
 
-	root["ecg"]["length"] = (*ecgData.m_fv.m_listValue).size();
+	root[ECG_HTTP][ECG_LENGTH] = (*ecgData.m_fv.m_listValue).size();
 
 	Json::Value array; 
 	for (int i = 0; i < (*ecgData.m_fv.m_listValue).size(); ++i)
 		array.append(*(*ecgData.m_fv.m_listValue)[i]);
-	root["ecg"]["values"] = array;
+	root[ECG_HTTP][ECG_VALUES] = array;
 
 	//root["ECG"]["HR"] = *ecgData.m_pdHR;
 	std::stringstream ss;

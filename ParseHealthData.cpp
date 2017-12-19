@@ -93,7 +93,6 @@ void * CParseHealthData::getHealthData()
 
 bool CParseHealthData::parseDataGroup(Json::Value & jsonRoot)
 {
-	//std::cout << jsonRoot.isArray() << std::endl;
 	m_heathData.clearHealthData();
 	if (!jsonRoot.isArray())
 	{
@@ -104,7 +103,6 @@ bool CParseHealthData::parseDataGroup(Json::Value & jsonRoot)
 	}
 	for (int i = 0; i < jsonRoot.size(); ++i)
 	{
-		std::cout << jsonRoot[i][PERSONID] << std::endl;
 		if (!parseJson(jsonRoot[i]))
 			return false;
 	}
@@ -173,6 +171,16 @@ bool CParseHealthData::parseJson(Json::Value & jsonRoot)
 		{
 			m_heathData.setDataType(TYPE_BP);
 			m_heathData.setHealthData(&bpData);
+		}
+	}
+	else if (jsonRoot[ECG_HTTP].isObject())
+	{
+		pdECGRespond ecgRespondData;
+		bRlt = __parseJson(jsonRoot, TYPE_ECGREPLY, &ecgRespondData);
+		if (bRlt)
+		{
+			m_heathData.setDataType(TYPE_ECGREPLY);
+			m_heathData.setHealthData(&ecgRespondData);
 		}
 	}
 	else
@@ -274,6 +282,20 @@ bool CParseHealthData::__parseJson(Json::Value & jsonRoot, int iDataType, void *
 			bRlt = false;
 		}
 		break;
+
+	case TYPE_ECGREPLY:
+		if (jsonRoot[ECG_HTTP].isObject())
+		{
+			pdECGRespond *pData = (pdECGRespond *)lpOutResult;
+			parseECGRespond(jsonRoot, *pData);
+		}
+		else
+		{
+			std::cout << "can not find type [" << PPG << "]" << std::endl;
+			bRlt = false;
+		}
+		break;
+
 	default:
 		std::cout << "unknown data type [" << iDataType << "]" << std::endl;
 		bRlt = false;
@@ -455,6 +477,39 @@ bool CParseHealthData::parseBP(Json::Value &jsonValue, pdBP & bpData)
 	else
 		*bpData.m_pdHR = jsonValue[BP][HR].asString();
 
+	return bRlt;
+}
+
+bool CParseHealthData::parseECGRespond(Json::Value &jsonValue, pdECGRespond & ecgRespondData)
+{
+	bool bRlt = true;
+	Json::Value types = jsonValue["ecg"]["types"];
+	Json::Value probes = jsonValue[ECG_HTTP][REPLY_PROBS];
+	if (types.isNull())		//采样值
+	{
+		std::cout << "[" << ECG_HTTP << "]" << "[" << REPLY_TYPES << "]"
+			<< " is null" << std::endl;
+		bRlt = false;
+	}
+	if (bRlt && probes.isNull())
+	{
+		std::cout << "[" << ECG_HTTP << "]" << "[" << REPLY_PROBS << "]"
+			<< " is null" << std::endl;
+		bRlt = false;
+	}
+	if (bRlt)
+	{
+		for(int i = 0; i < ecgRespondData.m_vecProbs.size(); ++i)
+		{
+			int type = types[i].asInt();
+			double probe = probes[i].asDouble();
+
+			if (type < 4)
+				ecgRespondData.m_vecProbs[type] = probe;
+			else
+				std::cout << "type >= 4 --> type = " << type << std::endl;
+		}
+	}
 	return bRlt;
 }
 

@@ -71,6 +71,15 @@ void* CHealthDataBase::getHealthData()
 		return &m_bpData;
 	}
 
+	case TYPE_ECGREPLY:
+	{
+		if (m_ecgRespondQueue.empty())
+			return nullptr;
+		m_ecgRespond = m_ecgRespondQueue.front();
+		m_ecgRespondQueue.pop();
+		return &m_ecgRespond;
+	}
+
 	default:
 		return nullptr;
 	}
@@ -79,10 +88,10 @@ void* CHealthDataBase::getHealthData()
 int CHealthDataBase::getDataType()
 {
 	//return m_iType;
-	if (!m_parsedDataTypeQueue.empty())
+	if (!m_iTypeQueue.empty())
 	{
-		m_iType = m_parsedDataTypeQueue.front();
-		m_parsedDataTypeQueue.pop();
+		m_iType = m_iTypeQueue.front();
+		m_iTypeQueue.pop();
 	}
 	else
 		m_iType = 0;
@@ -92,7 +101,7 @@ int CHealthDataBase::getDataType()
 void CHealthDataBase::setDataType(const int iType)
 {
 	m_iType = iType;
-	m_parsedDataTypeQueue.push(iType);
+	m_iTypeQueue.push(iType);
 }
 
 void CHealthDataBase::setHealthData(void *lpHealthData)
@@ -128,6 +137,11 @@ void CHealthDataBase::setHealthData(void *lpHealthData)
 		m_bpDataQueue.push(m_bpData);
 		break;
 
+	case TYPE_ECGREPLY:
+		m_ecgRespond = *(pdECGRespond *)lpHealthData;
+		m_ecgRespondQueue.push(m_ecgRespond);
+		break;
+
 	default:
 		if ((*m_strErr).length() > 0)
 			(*m_strErr).clear();
@@ -152,8 +166,8 @@ void CHealthDataBase::clearHealthData()
 		m_tempDataQueue.pop();
 	while (m_bpDataQueue.size())
 		m_bpDataQueue.pop();
-	while (m_parsedDataTypeQueue.size())
-		m_parsedDataTypeQueue.pop();
+	while (m_iTypeQueue.size())
+		m_iTypeQueue.pop();
 
 	//*m_ppgData.m_fv.m_freq = "";
 	//(*m_ppgData.m_fv.m_listValue).clear();

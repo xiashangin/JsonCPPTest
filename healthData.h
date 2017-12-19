@@ -31,6 +31,13 @@ typedef std::shared_ptr<std::vector< PDataListList >> PDataListListList;
 #define COLLECTTIME		"t"
 #define PERSONID		"id"
 
+#define ECG_HTTP		"ecg"
+#define REPLY_TYPES		"types"
+#define REPLY_PROBS		"probs"
+#define ECG_LENGTH		"length"
+#define ECG_VALUES		"values"
+
+
 
 typedef struct _FreqAndValue {
 	PData m_freq;
@@ -123,3 +130,16 @@ typedef struct _BP {
 		m_pdHR = std::make_shared<std::string>();
 	}
 }pdBP;
+
+
+#define TYPES_NORMAL		0		//正常
+#define TYPES_SICK			1		//重病
+#define TYPES_OTHER			2		//其他
+#define TYPES_NOISE			3		//噪声
+typedef struct _ECGRespond {
+	std::vector<double> m_vecProbs;
+
+	_ECGRespond(){
+		m_vecProbs = std::vector<double>(4, 0);
+	}
+}pdECGRespond;

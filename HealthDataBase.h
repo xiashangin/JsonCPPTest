@@ -9,6 +9,7 @@
 #define TYPE_TEMP		154
 #define TYPE_BP			155
 
+#define TYPE_ECGREPLY	160
 
 #include <queue>
 std::string int2str(const int &int_temp);
@@ -20,28 +21,29 @@ public:
 	~CHealthDataBase();
 
 	void * getHealthData();
+	void setHealthData(void *lpHealthData);
 	int  getDataType();
 	void setDataType(const int iType);
-	void setHealthData(void *lpHealthData);
 
 	void clearHealthData();
 private:
-	pdPPG m_ppgData;
-	pdECG m_ecgData;
-	pdSPO2 m_spo2Data;
-	pdGSR m_gsrData;
-	pdTEMP m_tempData;
-	pdBP m_bpData;
-
+	pdPPG	m_ppgData;
+	pdECG	m_ecgData;
+	pdSPO2	m_spo2Data;
+	pdGSR	m_gsrData;
+	pdTEMP	m_tempData;
+	pdBP	m_bpData;
+	pdECGRespond	m_ecgRespond;
 	std::queue<pdPPG>	m_ppgDataQueue;
 	std::queue<pdECG>	m_ecgDataQueue;
 	std::queue<pdSPO2>	m_spo2DataQueue;
 	std::queue<pdGSR>	m_gsrDataQueue;
 	std::queue<pdTEMP>	m_tempDataQueue;
 	std::queue<pdBP>	m_bpDataQueue;
+	std::queue<pdECGRespond>	m_ecgRespondQueue;
 
 	int m_iType;
-	std::queue<int> m_parsedDataTypeQueue;
+	std::queue<int>	m_iTypeQueue;
 	std::shared_ptr<std::string> m_strErr;
 };
 
