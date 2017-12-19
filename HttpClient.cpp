@@ -49,6 +49,7 @@ void CHttpClient::sendReq(const std::string &strReqType, const std::string & req
 	while (!m_bExitFlag) {
 		mg_mgr_poll(&m_mgr, 1000);
 	}
+	m_bExitFlag = false;
 }
 
 void CHttpClient::ev_handler(struct mg_connection *nc, int ev, void *ev_data)

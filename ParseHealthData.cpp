@@ -62,11 +62,15 @@ int CParseHealthData::parseFromString(const std::string & strJsonString)
 	}
 	std::cout << "parse json file success!!!" << std::endl;
 	
-
-	if (parseJson(jsonRoot))
+	if (parseDataGroup(jsonRoot))
 		return PARSE_OK;
 	else
 		return PARSE_KEYNOTEXIST;
+
+	//if (parseJson(jsonRoot))
+	//	return PARSE_OK;
+	//else
+	//	return PARSE_KEYNOTEXIST;
 }
 std::string CParseHealthData::readFileIntoString(const char * filename)
 {
@@ -89,9 +93,18 @@ void * CParseHealthData::getHealthData()
 
 bool CParseHealthData::parseDataGroup(Json::Value & jsonRoot)
 {
+	//std::cout << jsonRoot.isArray() << std::endl;
+
+	if (!jsonRoot.isArray())
+	{
+		if (parseJson(jsonRoot))
+			return true;
+		else
+			return false;
+	}
 	for (int i = 0; i < jsonRoot.size(); ++i)
 	{
-		std::cout << jsonRoot[0][PERSONID] << std::endl;
+		std::cout << jsonRoot[i][PERSONID] << std::endl;
 		if (!parseJson(jsonRoot[i]))
 			return false;
 	}
