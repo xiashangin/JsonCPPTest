@@ -3,14 +3,12 @@
 
 #include "ParseHealthData.h"
 #include "PackHealthData.h"
-#include "http/mongoose.h"
+#include "HttpClient.h"
+
+#include <iostream>
 
 #include <windows.h>
-
-
 static int s_exit_flag = 0;
-static int s_show_headers = 0;
-static const char *s_show_headers_opt = "--show-headers";
 
 static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
 	struct http_message *hm = (struct http_message *) ev_data;
@@ -24,13 +22,7 @@ static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
 		break;
 	case MG_EV_HTTP_REPLY:
 		nc->flags |= MG_F_CLOSE_IMMEDIATELY;
-		if (s_show_headers) {
-			fwrite(hm->message.p, 1, hm->message.len, stdout);
-		}
-		else {
-			fwrite(hm->body.p, 1, hm->body.len, stdout);
-		}
-		putchar('\n');
+		fwrite(hm->body.p, 1, hm->body.len, stdout);
 		s_exit_flag = 1;
 		break;
 	case MG_EV_CLOSE:
@@ -44,61 +36,47 @@ static void ev_handler(struct mg_connection *nc, int ev, void *ev_data) {
 	}
 }
 
+void evHandler(int evType, std::string strOutResult)
+{
+	std::cout << "got http server reply..." << strOutResult << std::endl;
+}
+
 #include <random>
 #include <functional>
 int main(int argc, char **argv)
 {
-	//std::random_device rd;
-	//std::default_random_engine engine(rd());
-	//std::uniform_int_distribution<> dis(1, 20);
-	//auto dice = std::bind(dis, engine);
+	std::random_device rd;
+	std::default_random_engine engine(rd());
+	std::uniform_int_distribution<> dis(1, 20);
+	auto dice = std::bind(dis, engine);
 
-	//CPackHealthData packUtil;
-	//std::string strECGData;
-	//pdECG ecgData;
+	CPackHealthData packUtil;
+	std::string strECGData;
+	pdECG ecgData;
 
-	//*ecgData.m_pdHR = "99";
-	//*ecgData.m_fv.m_freq = 100;
-	//for (int i = 0; i < 9000; ++i)
-	//	(*ecgData.m_fv.m_listValue).push_back(std::make_shared<std::string>(int2str(dice())));
-	//*ecgData.m_timeId.m_pdTime = "2017-12-18 18:51:44:856";
-	//*ecgData.m_timeId.m_pdPersonId = "0000009999";
+	*ecgData.m_pdHR = "99";
+	*ecgData.m_fv.m_freq = 100;
+	for (int i = 0; i < 9000; ++i)
+		(*ecgData.m_fv.m_listValue).push_back(std::make_shared<std::string>(int2str(dice())));
+	*ecgData.m_timeId.m_pdTime = "2017-12-18 18:51:44:856";
+	*ecgData.m_timeId.m_pdPersonId = "0000009999";
 
-	//packUtil.packECGData(ecgData, strECGData);
-	//std::cout << (*ecgData.m_fv.m_listValue).size();//<< strECGData << std::endl;
+	packUtil.packECGData(ecgData, strECGData);
+	std::cout << (*ecgData.m_fv.m_listValue).size();//<< strECGData << std::endl;
 
 	//struct mg_mgr mgr;
-	//int i;
-
 	//mg_mgr_init(&mgr, NULL);
-
-	///* Process command line arguments */
-	//for (i = 1; i < argc; i++) {
-	//	if (strcmp(argv[i], s_show_headers_opt) == 0) {
-	//		s_show_headers = 1;
-	//	}
-	//	else if (strcmp(argv[i], "--hexdump") == 0 && i + 1 < argc) {
-	//		mgr.hexdump_file = argv[++i];
-	//	}
-	//	else {
-	//		break;
-	//	}
-	//}
-
-	//if (i + 1 != argc) {
-	//	fprintf(stderr, "Usage: %s [%s] [--hexdump <file>] <URL>\n", argv[0],
-	//		s_show_headers_opt);
-	//	exit(EXIT_FAILURE);
-	//}
-
-	////http://192.168.31.227:8766/ecg
-	//mg_connect_http(&mgr, ev_handler, argv[i], "Content - Type: application / x - www - form - urlencoded\r\n", strECGData.c_str());
+	//std::string strIp = "http://192.168.31.227:8766/ecg";
+	//mg_connect_http(&mgr, ev_handler, strIp.c_str(), "Content - Type: application / x - www - form - urlencoded\r\n", strECGData.c_str());
 
 	//while (s_exit_flag == 0) {
 	//	mg_mgr_poll(&mgr, 1000);
 	//}
 	//mg_mgr_free(&mgr);
 
+	CHttpClient httpClient("http://192.168.31.227:8766/ecg");
+	httpClient.registerEvHandler("ecg", evHandler);
+	httpClient.sendReq("ecg", strECGData);
 
 	CParseHealthData parseUtil;
 	int iRlt = parseUtil.parseFromFile(std::string("json/healthData.json"));
@@ -218,8 +196,6 @@ int main(int argc, char **argv)
 	//	}
 	//	else
 	//		std::cout << "parse json failed!!!" << std::endl;
-
-
 
 	//	//iRlt = parseUtil.parseFromFile(std::string("json/ECG.json"));
 	//	iRlt = parseUtil.parseFromString(parseUtil.readFileIntoString("json/ECG.json"));

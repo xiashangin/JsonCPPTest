@@ -1,6 +1,7 @@
 #include "HealthDataBase.h"
 
-
+#include <iostream>
+#include <sstream>
 
 CHealthDataBase::CHealthDataBase()
 {

@@ -10,7 +10,6 @@
 #define TYPE_BP			155
 
 
-#include <memory>
 #include <queue>
 std::string int2str(const int &int_temp);
 

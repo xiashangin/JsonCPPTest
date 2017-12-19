@@ -1,8 +1,9 @@
 #include "ParseHealthData.h"
 
-#include <fstream>
 #include <cstring>
-#include <memory>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 CParseHealthData::CParseHealthData()
 {
