@@ -347,7 +347,7 @@ bool CParseHealthData::getFreqVal(Json::Value &jsonValue, freqAndValue & fv, con
 	}
 	return bRlt;
 }
-bool CParseHealthData::getTimeId(Json::Value &jsonValue, timeAndId & timeId)
+bool CParseHealthData::getBaseData(Json::Value &jsonValue, baseData & baseData)
 {
 	bool bRlt = true;
 
@@ -360,6 +360,15 @@ bool CParseHealthData::getTimeId(Json::Value &jsonValue, timeAndId & timeId)
 	//else
 	//	*timeId.m_pdTime = jsonValue[COLLECTTIME].asString();
 
+	if (jsonValue[EXAMNUM].isNull())		//采样时间
+	{
+		std::cout << "[" << EXAMNUM << "]"
+			<< " is null" << std::endl;
+		bRlt = false;
+	}
+	else
+		*baseData.m_pdNum = jsonValue[EXAMNUM].asString();
+
 	if (jsonValue[PERSONID].isNull())		//人员ID
 	{
 		std::cout << "[" << PERSONID << "]"
@@ -367,14 +376,14 @@ bool CParseHealthData::getTimeId(Json::Value &jsonValue, timeAndId & timeId)
 		bRlt = false;
 	}
 	else
-		*timeId.m_pdPersonId = jsonValue[PERSONID].asString();
+		*baseData.m_pdPersonId = jsonValue[PERSONID].asString();
 	return bRlt;
 }
 
 bool CParseHealthData::parsePPG(Json::Value &jsonValue, pdPPG & ppgData)
 {
 	bool bRlt = getFreqVal(jsonValue, ppgData.m_fv, PPG);
-	bRlt = getTimeId(jsonValue, ppgData.m_timeId);
+	bRlt = getBaseData(jsonValue, ppgData.m_timeId);
 
 	if (jsonValue[PPG][HR].isNull())		//HR
 	{
@@ -389,7 +398,7 @@ bool CParseHealthData::parsePPG(Json::Value &jsonValue, pdPPG & ppgData)
 bool CParseHealthData::parseECG(Json::Value &jsonValue, pdECG & ecgData)
 {
 	bool bRlt = getFreqVal(jsonValue, ecgData.m_fv, ECG);
-	bRlt = getTimeId(jsonValue, ecgData.m_timeId);
+	bRlt = getBaseData(jsonValue, ecgData.m_timeId);
 
 	if (jsonValue[ECG][HR].isNull())		//HR
 	{
@@ -404,7 +413,7 @@ bool CParseHealthData::parseECG(Json::Value &jsonValue, pdECG & ecgData)
 bool CParseHealthData::parseSPO2(Json::Value &jsonValue, pdSPO2 & spo2Data)
 {
 	bool bRlt = getFreqVal(jsonValue, spo2Data.m_fv, SPO2);
-	bRlt = getTimeId(jsonValue, spo2Data.m_timeId);
+	bRlt = getBaseData(jsonValue, spo2Data.m_timeId);
 
 	if (jsonValue[SPO2][HR].isNull())		//HR
 	{
@@ -426,13 +435,13 @@ bool CParseHealthData::parseSPO2(Json::Value &jsonValue, pdSPO2 & spo2Data)
 bool CParseHealthData::parseGSR(Json::Value &jsonValue, pdGSR & gsrData)
 {
 	bool bRlt = getFreqVal(jsonValue, gsrData.m_fv, GSR);
-	bRlt = getTimeId(jsonValue, gsrData.m_timeId);
+	bRlt = getBaseData(jsonValue, gsrData.m_timeId);
 
 	return bRlt;
 }
 bool CParseHealthData::parseTEMP(Json::Value &jsonValue, pdTEMP & tempData)
 {
-	bool bRlt = getTimeId(jsonValue, tempData.m_timeId);
+	bool bRlt = getBaseData(jsonValue, tempData.m_timeId);
 	if (jsonValue[TEMP][HEAT].isNull())		//温度传感器值
 	{
 		std::cout << "[" << TEMP << "]" << "[" << HEAT << "]" << " is null" << std::endl;
@@ -452,7 +461,7 @@ bool CParseHealthData::parseTEMP(Json::Value &jsonValue, pdTEMP & tempData)
 }
 bool CParseHealthData::parseBP(Json::Value &jsonValue, pdBP & bpData)
 {
-	bool bRlt = getTimeId(jsonValue, bpData.m_timeId);
+	bool bRlt = getBaseData(jsonValue, bpData.m_timeId);
 	if (jsonValue[BP][BP_H].isNull())		//高压值
 	{
 		std::cout << "[" << BP << "]" << "[" << BP_H << "]" << " is null" << std::endl;

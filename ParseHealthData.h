@@ -35,7 +35,7 @@ private:
 	bool __parseJson(Json::Value & jsonRoot, int iDataType, void *lpOutResult);
 	bool openFile(const char * lpStrFileName);
 	bool getFreqVal(Json::Value &jsonValue, freqAndValue & fv, const char * strRoot);
-	bool getTimeId(Json::Value &jsonValue, timeAndId & timeId);
+	bool getBaseData(Json::Value &jsonValue, baseData & baseData);
 	bool parsePPG(Json::Value &jsonValue, pdPPG & ppgData);
 	bool parseECG(Json::Value &jsonValue, pdECG & ecgData);
 	bool parseSPO2(Json::Value &jsonValue, pdSPO2 & spo2Data);

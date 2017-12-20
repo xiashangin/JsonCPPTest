@@ -11,6 +11,7 @@ typedef std::shared_ptr<std::vector<PDataList>> PDataListList;
 typedef std::vector< PDataList >::iterator PDataListListIterator;
 typedef std::shared_ptr<std::vector< PDataListList >> PDataListListList;
 
+//6中健康数据
 #define PPG		"PPG"
 #define ECG		"ECG"
 #define SPO2	"SPO2"
@@ -30,15 +31,7 @@ typedef std::shared_ptr<std::vector< PDataListList >> PDataListListList;
 
 #define COLLECTTIME		"t"
 #define PERSONID		"id"
-
-#define ECG_HTTP		"ecg"
-#define REPLY_TYPES		"types"
-#define REPLY_PROBS		"probs"
-#define ECG_LENGTH		"length"
-#define ECG_VALUES		"values"
-#define ECG_STATUS		"state"
-#define ECG_INFO		"info"
-
+#define EXAMNUM			"num"
 
 typedef struct _FreqAndValue {
 	PData m_freq;
@@ -49,19 +42,21 @@ typedef struct _FreqAndValue {
 	}
 }freqAndValue;
 
-typedef struct _TimeAndId {
+typedef struct _BaseData {
 	PData m_pdTime;
 	PData m_pdPersonId;
+	PData m_pdNum;
 
-	_TimeAndId(){
+	_BaseData(){
 		m_pdTime = std::make_shared<std::string>();
 		m_pdPersonId = std::make_shared<std::string>();
+		m_pdNum = std::make_shared<std::string>();
 	}
-}timeAndId;
+}baseData;
 
 //脉搏波
 typedef struct _PPG {
-	timeAndId m_timeId;
+	baseData m_timeId;
 
 	freqAndValue m_fv;	//采样频率和当前采集的数据集合
 	PData m_pdHR;
@@ -73,7 +68,7 @@ typedef struct _PPG {
 
 //心电图
 typedef struct _ECG {
-	timeAndId m_timeId;
+	baseData m_timeId;
 
 	freqAndValue m_fv;	//采样频率和当前采集的数据集合
 	PData m_pdHR;
@@ -85,7 +80,7 @@ typedef struct _ECG {
 
 //血氧
 typedef struct _SPO2 {
-	timeAndId m_timeId;
+	baseData m_timeId;
 
 	freqAndValue m_fv;	//采样频率和当前采集的数据集合
 	PData m_pdHR;
@@ -99,14 +94,14 @@ typedef struct _SPO2 {
 
 //皮电
 typedef struct _GSR {
-	timeAndId m_timeId;
+	baseData m_timeId;
 
 	freqAndValue m_fv;	//采样频率和当前采集的数据集合
 }pdGSR;
 
 //体温
 typedef struct _TEMP {
-	timeAndId m_timeId;
+	baseData m_timeId;
 
 	PData m_pdHeat;
 	PData m_pdIR;
@@ -119,7 +114,7 @@ typedef struct _TEMP {
 
 //血压
 typedef struct _BP {
-	timeAndId m_timeId;
+	baseData m_timeId;
 
 	PData m_pdH;
 	PData m_pdL;
@@ -132,6 +127,15 @@ typedef struct _BP {
 	}
 }pdBP;
 
+
+//ecg预测模块的数据
+#define ECG_HTTP		"ecg"
+#define REPLY_TYPES		"types"
+#define REPLY_PROBS		"probs"
+#define ECG_LENGTH		"length"
+#define ECG_VALUES		"values"
+#define ECG_STATUS		"state"
+#define ECG_INFO		"info"
 
 #define TYPES_NORMAL		0		//正常
 #define TYPES_SICK			1		//重病
