@@ -108,91 +108,25 @@ bool CParseHealthData::parseDataGroup(Json::Value & jsonRoot)
 	}
 	return true;
 }
-
 bool CParseHealthData::parseJson(Json::Value & jsonRoot)
 {
-
 	bool bRlt = true;
 	if (jsonRoot[PPG].isObject())
-	{
-		pdPPG ppgData;
-		bRlt = __parseJson(jsonRoot, TYPE_PPG, &ppgData);
-		if (bRlt)
-		{
-			m_heathData.setDataType(TYPE_PPG);
-			m_heathData.setHealthData(&ppgData);
-		}
-	}
+		bRlt = parsePPG(jsonRoot);
 	else if (jsonRoot[ECG].isObject())
-	{
-		pdECG ecgData;
-		bRlt = __parseJson(jsonRoot, TYPE_ECG, &ecgData);
-		if (bRlt)
-		{
-			m_heathData.setDataType(TYPE_ECG);
-			m_heathData.setHealthData(&ecgData);
-		}
-	}
+		bRlt = parseECG(jsonRoot);
 	else if (jsonRoot[SPO2].isObject())
-	{
-		pdSPO2 spo2Data;
-		bRlt = __parseJson(jsonRoot, TYPE_SPO2, &spo2Data);
-		if (bRlt)
-		{
-			m_heathData.setDataType(TYPE_SPO2);
-			m_heathData.setHealthData(&spo2Data);
-		}
-	}
+		bRlt = parseSPO2(jsonRoot);
 	else if (jsonRoot[GSR].isObject())
-	{
-		pdGSR gsrData;
-		bRlt = __parseJson(jsonRoot, TYPE_GSR, &gsrData);
-		if (bRlt)
-		{
-			m_heathData.setDataType(TYPE_GSR);
-			m_heathData.setHealthData(&gsrData);
-		}
-	}
+		bRlt = parseGSR(jsonRoot);
 	else if (jsonRoot[TEMP].isObject())
-	{
-		pdTEMP tempData;
-		bRlt = __parseJson(jsonRoot, TYPE_TEMP, &tempData);
-		if (bRlt)
-		{
-			m_heathData.setDataType(TYPE_TEMP);
-			m_heathData.setHealthData(&tempData);
-		}
-	}
+		bRlt = parseTEMP(jsonRoot);
 	else if (jsonRoot[BP].isObject())
-	{
-		pdBP bpData;
-		bRlt = __parseJson(jsonRoot, TYPE_BP, &bpData);
-		if (bRlt)
-		{
-			m_heathData.setDataType(TYPE_BP);
-			m_heathData.setHealthData(&bpData);
-		}
-	}
+		bRlt = parseBP(jsonRoot);
 	else if (jsonRoot[ECG_HTTP].isObject())
-	{
-		pdECGRespond ecgRespondData;
-		bRlt = __parseJson(jsonRoot, TYPE_ECGREPLY, &ecgRespondData);
-		if (bRlt)
-		{
-			m_heathData.setDataType(TYPE_ECGREPLY);
-			m_heathData.setHealthData(&ecgRespondData);
-		}
-	}
+		bRlt = parseECGRespond(jsonRoot);
 	else if (jsonRoot[PERSONINFO].isObject())
-	{
-		pdPersonInfo personInfo;
-		bRlt = __parseJson(jsonRoot, TYPE_PERSONINFO, &personInfo);
-		if (bRlt)
-		{
-			m_heathData.setDataType(TYPE_PERSONINFO);
-			m_heathData.setHealthData(&personInfo);
-		}
-	}
+		bRlt = parsePersonInfo(jsonRoot);
 	else
 	{
 		m_heathData.setDataType(TYPE_UNKNOWN);
@@ -202,131 +136,7 @@ bool CParseHealthData::parseJson(Json::Value & jsonRoot)
 	}
 	return bRlt;
 }
-bool CParseHealthData::__parseJson(Json::Value & jsonRoot, int iDataType, void *lpOutResult)
-{
-	bool bRlt = true;
-	switch (iDataType)
-	{
-	case TYPE_PPG:
-		if (jsonRoot[PPG].isObject())
-		{
-			pdPPG *pData = (pdPPG *)lpOutResult;
-			if (!(*(pData->m_fv.m_listValue)).empty())
-				(*(pData->m_fv.m_listValue)).clear();
-			parsePPG(jsonRoot, *pData);
-		}
-		else
-		{
-			std::cout << "can not find type [" << PPG << "]" << std::endl;
-			bRlt = false;
-		}
-		break;
 
-	case TYPE_ECG:
-		if (jsonRoot[ECG].isObject())
-		{
-			pdECG *pData = (pdECG *)lpOutResult;
-			if (!(*(pData->m_fv.m_listValue)).empty())
-				(*(pData->m_fv.m_listValue)).clear();
-			parseECG(jsonRoot, *pData);
-		}
-		else
-		{
-			std::cout << "can not find type [" << ECG << "]" << std::endl;
-			bRlt = false;
-		}
-		break;
-
-	case TYPE_SPO2:
-		if (jsonRoot[SPO2].isObject())
-		{
-			pdSPO2 *pData = (pdSPO2 *)lpOutResult;
-			if (!(*(pData->m_fv.m_listValue)).empty())
-				(*(pData->m_fv.m_listValue)).clear();
-			parseSPO2(jsonRoot, *pData);
-		}
-		else
-		{
-			std::cout << "can not find type [" << SPO2 << "]" << std::endl;
-			bRlt = false;
-		}
-		break;
-
-	case TYPE_GSR:
-		if (jsonRoot[GSR].isObject())
-		{
-			pdGSR *pData = (pdGSR *)lpOutResult;
-			if (!(*(pData->m_fv.m_listValue)).empty())
-				(*(pData->m_fv.m_listValue)).clear();
-			parseGSR(jsonRoot, *pData);
-		}
-		else
-		{
-			std::cout << "can not find type [" << GSR << "]" << std::endl;
-			bRlt = false;
-		}
-		break;
-
-	case TYPE_TEMP:
-		if (jsonRoot[TEMP].isObject())
-		{
-			pdTEMP *pData = (pdTEMP *)lpOutResult;
-			parseTEMP(jsonRoot, *pData);
-		}
-		else
-		{
-			std::cout << "can not find type [" << TEMP << "]" << std::endl;
-			bRlt = false;
-		}
-		break;
-
-	case TYPE_BP:
-		if (jsonRoot[BP].isObject())
-		{
-			pdBP *pData = (pdBP *)lpOutResult;
-			parseBP(jsonRoot, *pData);
-		}
-		else
-		{
-			std::cout << "can not find type [" << BP << "]" << std::endl;
-			bRlt = false;
-		}
-		break;
-
-	case TYPE_ECGREPLY:
-		if (jsonRoot[ECG_HTTP].isObject())
-		{
-			pdECGRespond *pData = (pdECGRespond *)lpOutResult;
-			parseECGRespond(jsonRoot, *pData);
-		}
-		else
-		{
-			std::cout << "can not find type [" << TYPE_ECGREPLY << "]" << std::endl;
-			bRlt = false;
-		}
-		break;
-
-	case TYPE_PERSONINFO:
-		if (jsonRoot[PERSONINFO].isObject())
-		{
-			pdPersonInfo *pData = (pdPersonInfo *)lpOutResult;
-			parsePersonInfo(jsonRoot, *pData);
-		}
-		else
-		{
-			std::cout << "can not find type [" << TYPE_PERSONINFO << "]" << std::endl;
-			bRlt = false;
-		}
-		break;
-
-
-	default:
-		std::cout << "unknown data type [" << iDataType << "]" << std::endl;
-		bRlt = false;
-		break;
-	}
-	return bRlt;
-}
 bool CParseHealthData::openFile(const char * lpStrFileName)
 {
 	std::ifstream ifs; //标准输入流
@@ -404,8 +214,9 @@ bool CParseHealthData::getBaseData(Json::Value &jsonValue, baseData & baseData)
 	return bRlt;
 }
 
-bool CParseHealthData::parsePPG(Json::Value &jsonValue, pdPPG & ppgData)
+bool CParseHealthData::parsePPG(Json::Value &jsonValue)
 {
+	pdPPG ppgData;
 	bool bRlt = getFreqVal(jsonValue, ppgData.m_fv, PPG);
 	bRlt = getBaseData(jsonValue, ppgData.m_timeId);
 
@@ -417,10 +228,16 @@ bool CParseHealthData::parsePPG(Json::Value &jsonValue, pdPPG & ppgData)
 	else
 		*ppgData.m_pdHR = jsonValue[PPG][HR].asString();
 
+	if (bRlt)
+	{
+		m_heathData.setDataType(TYPE_PPG);
+		m_heathData.setHealthData(&ppgData);
+	}
 	return bRlt;
 }
-bool CParseHealthData::parseECG(Json::Value &jsonValue, pdECG & ecgData)
+bool CParseHealthData::parseECG(Json::Value &jsonValue)
 {
+	pdECG ecgData;
 	bool bRlt = getFreqVal(jsonValue, ecgData.m_fv, ECG);
 	bRlt = getBaseData(jsonValue, ecgData.m_timeId);
 
@@ -432,10 +249,17 @@ bool CParseHealthData::parseECG(Json::Value &jsonValue, pdECG & ecgData)
 	else
 		*ecgData.m_pdHR = jsonValue[ECG][HR].asString();
 
+	if (bRlt)
+	{
+		m_heathData.setDataType(TYPE_ECG);
+		m_heathData.setHealthData(&ecgData);
+	}
+
 	return bRlt;
 }
-bool CParseHealthData::parseSPO2(Json::Value &jsonValue, pdSPO2 & spo2Data)
+bool CParseHealthData::parseSPO2(Json::Value &jsonValue)
 {
+	pdSPO2 spo2Data;
 	bool bRlt = getFreqVal(jsonValue, spo2Data.m_fv, SPO2);
 	bRlt = getBaseData(jsonValue, spo2Data.m_timeId);
 
@@ -454,17 +278,30 @@ bool CParseHealthData::parseSPO2(Json::Value &jsonValue, pdSPO2 & spo2Data)
 	}
 	else
 		*spo2Data.m_pdSP = jsonValue[SPO2][SP].asString();
+
+	if (bRlt)
+	{
+		m_heathData.setDataType(TYPE_SPO2);
+		m_heathData.setHealthData(&spo2Data);
+	}
 	return bRlt;
 }
-bool CParseHealthData::parseGSR(Json::Value &jsonValue, pdGSR & gsrData)
+bool CParseHealthData::parseGSR(Json::Value &jsonValue)
 {
+	pdGSR gsrData;
 	bool bRlt = getFreqVal(jsonValue, gsrData.m_fv, GSR);
 	bRlt = getBaseData(jsonValue, gsrData.m_timeId);
 
+	if (bRlt)
+	{
+		m_heathData.setDataType(TYPE_GSR);
+		m_heathData.setHealthData(&gsrData);
+	}
 	return bRlt;
 }
-bool CParseHealthData::parseTEMP(Json::Value &jsonValue, pdTEMP & tempData)
+bool CParseHealthData::parseTEMP(Json::Value &jsonValue)
 {
+	pdTEMP tempData;
 	bool bRlt = getBaseData(jsonValue, tempData.m_timeId);
 	if (jsonValue[TEMP][HEAT].isNull())		//温度传感器值
 	{
@@ -481,10 +318,17 @@ bool CParseHealthData::parseTEMP(Json::Value &jsonValue, pdTEMP & tempData)
 	}
 	else
 		*tempData.m_pdIR = jsonValue[TEMP][IR].asString();
+
+	if (bRlt)
+	{
+		m_heathData.setDataType(TYPE_TEMP);
+		m_heathData.setHealthData(&tempData);
+	}
 	return bRlt;
 }
-bool CParseHealthData::parseBP(Json::Value &jsonValue, pdBP & bpData)
+bool CParseHealthData::parseBP(Json::Value &jsonValue)
 {
+	pdBP bpData;
 	bool bRlt = getBaseData(jsonValue, bpData.m_timeId);
 	if (jsonValue[BP][BP_H].isNull())		//高压值
 	{
@@ -510,11 +354,16 @@ bool CParseHealthData::parseBP(Json::Value &jsonValue, pdBP & bpData)
 	else
 		*bpData.m_pdHR = jsonValue[BP][HR].asString();
 
+	if (bRlt)
+	{
+		m_heathData.setDataType(TYPE_BP);
+		m_heathData.setHealthData(&bpData);
+	}
 	return bRlt;
 }
-
-bool CParseHealthData::parsePersonInfo(Json::Value &jsonValue, pdPersonInfo & personInfo)
+bool CParseHealthData::parsePersonInfo(Json::Value &jsonValue)
 {
+	pdPersonInfo personInfo;
 	bool bRlt = true;
 	if (jsonValue[PERSONINFO][NAME].isNull())		//姓名
 	{
@@ -556,11 +405,16 @@ bool CParseHealthData::parsePersonInfo(Json::Value &jsonValue, pdPersonInfo & pe
 	else
 		*personInfo.m_id = jsonValue[PERSONINFO][PERSONID].asString();
 
+	if (bRlt)
+	{
+		m_heathData.setDataType(TYPE_PERSONINFO);
+		m_heathData.setHealthData(&personInfo);
+	}
 	return bRlt;
 }
-
-bool CParseHealthData::parseECGRespond(Json::Value &jsonValue, pdECGRespond & ecgRespondData)
+bool CParseHealthData::parseECGRespond(Json::Value &jsonValue)
 {
+	pdECGRespond ecgRespondData;
 	bool bRlt = true;
 	Json::Value types = jsonValue[ECG_HTTP][REPLY_TYPES];
 	Json::Value probes = jsonValue[ECG_HTTP][REPLY_PROBS];
@@ -606,6 +460,11 @@ bool CParseHealthData::parseECGRespond(Json::Value &jsonValue, pdECGRespond & ec
 			else
 				std::cout << "type >= 4 --> type = " << type << std::endl;
 		}
+	}
+	if (bRlt)
+	{
+		m_heathData.setDataType(TYPE_ECGREPLY);
+		m_heathData.setHealthData(&ecgRespondData);
 	}
 	return bRlt;
 }

@@ -36,26 +36,26 @@ int main(int argc, char **argv)
 	auto dice = std::bind(dis, engine);
 	CHttpClient httpClient("http://192.168.31.227:8766/ecg");
 
-	//httpClient.registerEvHandler("ecg", evHandler);
-	//int i = 0;
-	//while(i < 5)
-	//{
-	//	i++;
-	//	CPackHealthData packUtil;
-	//	std::string strECGData;
-	//	pdECG ecgData;
+	httpClient.registerEvHandler("ecg", evHandler);
+	int i = 0;
+	while(i < 5)
+	{
+		i++;
+		CPackHealthData packUtil;
+		std::string strECGData;
+		pdECG ecgData;
 
-	//	*ecgData.m_pdHR = "99";
-	//	*ecgData.m_fv.m_freq = 100;
-	//	for (int i = 0; i < 9000; ++i)
-	//		(*ecgData.m_fv.m_listValue).push_back(std::make_shared<std::string>(int2str(dice())));
-	//	*ecgData.m_timeId.m_pdTime = "2017-12-18 18:51:44:856";
-	//	*ecgData.m_timeId.m_pdPersonId = "0000009999";
+		*ecgData.m_pdHR = "99";
+		*ecgData.m_fv.m_freq = 100;
+		for (int i = 0; i < 9000; ++i)
+			(*ecgData.m_fv.m_listValue).push_back(std::make_shared<std::string>(int2str(dice())));
+		*ecgData.m_timeId.m_pdTime = "2017-12-18 18:51:44:856";
+		*ecgData.m_timeId.m_pdPersonId = "0000009999";
 
-	//	packUtil.packECGData(ecgData, strECGData);
-	//	std::cout << (*ecgData.m_fv.m_listValue).size();//<< strECGData << std::endl;
-	//	httpClient.sendReq("ecg", strECGData);
-	//}
+		packUtil.packECGData(ecgData, strECGData);
+		std::cout << (*ecgData.m_fv.m_listValue).size();//<< strECGData << std::endl;
+		httpClient.sendReq("ecg", strECGData);
+	}
 
 	CParseHealthData parseUtil;
 	//int iRlt = parseUtil.parseFromFile(std::string("json/TEMP.json"));

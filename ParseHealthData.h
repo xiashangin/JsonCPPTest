@@ -32,18 +32,17 @@ public:
 private:
 	bool parseDataGroup(Json::Value & jsonRoot);
 	bool parseJson(Json::Value & jsonRoot);
-	bool __parseJson(Json::Value & jsonRoot, int iDataType, void *lpOutResult);
 	bool openFile(const char * lpStrFileName);
 	bool getFreqVal(Json::Value &jsonValue, freqAndValue & fv, const char * strRoot);
 	bool getBaseData(Json::Value &jsonValue, baseData & baseData);
-	bool parsePPG(Json::Value &jsonValue, pdPPG & ppgData);
-	bool parseECG(Json::Value &jsonValue, pdECG & ecgData);
-	bool parseSPO2(Json::Value &jsonValue, pdSPO2 & spo2Data);
-	bool parseGSR(Json::Value &jsonValue, pdGSR & gsrData);
-	bool parseTEMP(Json::Value &jsonValue, pdTEMP & tempData);
-	bool parseBP(Json::Value &jsonValue, pdBP & bpData);
-	bool parsePersonInfo(Json::Value &jsonValue, pdPersonInfo & personInfo);
-	bool parseECGRespond(Json::Value &jsonValue, pdECGRespond & ecgRespondData);
+	bool parsePPG(Json::Value &jsonValue);
+	bool parseECG(Json::Value &jsonValue);
+	bool parseSPO2(Json::Value &jsonValue);
+	bool parseGSR(Json::Value &jsonValue);
+	bool parseTEMP(Json::Value &jsonValue);
+	bool parseBP(Json::Value &jsonValue);
+	bool parsePersonInfo(Json::Value &jsonValue);
+	bool parseECGRespond(Json::Value &jsonValue);
 	CHealthDataBase m_heathData;
 };
 
