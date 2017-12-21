@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 	//int iRlt = parseUtil.parseFromFile(std::string("json/TEMP.json"));
 	//int iRlt = parseUtil.parseFromString(parseUtil.readFileIntoString("json/TEMP.json"));
 	//int iRlt = parseUtil.parseFromFile(std::string("json/healthData.json"));
-	int iRlt = parseUtil.parseFromString(parseUtil.readFileIntoString("json/longjson_95_gsr.json"));
+	int iRlt = parseUtil.parseFromString(parseUtil.readFileIntoString("json/j_id.json"));
 	int iDataType;
 	while ((iDataType = parseUtil.getDataType()) != 0)
 	{
@@ -157,6 +157,18 @@ int main(int argc, char **argv)
 			std::cout << "H-->" << *bpData.m_pdH << std::endl;
 			std::cout << "L-->" << *bpData.m_pdL << std::endl;
 			std::cout << "HR-->" << *bpData.m_pdHR << std::endl;
+			break;
+		}
+
+		case TYPE_PERSONINFO:
+		{
+			std::cout << "TYPE_PERSONINFO" << std::endl;
+			pdPersonInfo personInfo = *(pdPersonInfo *)parseUtil.getHealthData();
+			std::cout << "id-->" << *personInfo.m_id << std::endl;
+			std::cout << "name-->" << *personInfo.m_name << std::endl;
+			std::cout << "sex-->" << *personInfo.m_gender << std::endl;
+			std::cout << "birth-->" << *personInfo.m_birth << std::endl;
+			std::cout << "phone-->" << *personInfo.m_phone << std::endl;
 			break;
 		}
 

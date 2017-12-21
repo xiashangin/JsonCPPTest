@@ -80,6 +80,15 @@ void* CHealthDataBase::getHealthData()
 		return &m_ecgRespond;
 	}
 
+	case TYPE_PERSONINFO:
+	{
+		if (m_personInfoQueue.empty())
+			return nullptr;
+		m_personInfo = m_personInfoQueue.front();
+		m_personInfoQueue.pop();
+		return &m_personInfo;
+	}
+
 	default:
 		return nullptr;
 	}
@@ -142,6 +151,11 @@ void CHealthDataBase::setHealthData(void *lpHealthData)
 		m_ecgRespondQueue.push(m_ecgRespond);
 		break;
 
+	case TYPE_PERSONINFO:
+		m_personInfo = *(pdPersonInfo *)lpHealthData;
+		m_personInfoQueue.push(m_personInfo);
+		break;
+
 	default:
 		if ((*m_strErr).length() > 0)
 			(*m_strErr).clear();
@@ -166,6 +180,10 @@ void CHealthDataBase::clearHealthData()
 		m_tempDataQueue.pop();
 	while (m_bpDataQueue.size())
 		m_bpDataQueue.pop();
+	while (m_personInfoQueue.size())
+		m_personInfoQueue.pop();
+	while (m_ecgRespondQueue.size())
+		m_ecgRespondQueue.pop();
 	while (m_iTypeQueue.size())
 		m_iTypeQueue.pop();
 

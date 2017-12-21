@@ -9,7 +9,9 @@
 #define TYPE_TEMP		154
 #define TYPE_BP			155
 
-#define TYPE_ECGREPLY	160
+#define TYPE_PERSONINFO	160
+
+#define TYPE_ECGREPLY	170
 
 #include <queue>
 std::string int2str(const int &int_temp);
@@ -33,13 +35,18 @@ private:
 	pdGSR	m_gsrData;
 	pdTEMP	m_tempData;
 	pdBP	m_bpData;
+	
+	pdPersonInfo	m_personInfo;
 	pdECGRespond	m_ecgRespond;
+	
 	std::queue<pdPPG>	m_ppgDataQueue;
 	std::queue<pdECG>	m_ecgDataQueue;
 	std::queue<pdSPO2>	m_spo2DataQueue;
 	std::queue<pdGSR>	m_gsrDataQueue;
 	std::queue<pdTEMP>	m_tempDataQueue;
 	std::queue<pdBP>	m_bpDataQueue;
+	
+	std::queue<pdPersonInfo>	m_personInfoQueue;
 	std::queue<pdECGRespond>	m_ecgRespondQueue;
 
 	int m_iType;

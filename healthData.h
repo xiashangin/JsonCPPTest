@@ -33,6 +33,30 @@ typedef std::shared_ptr<std::vector< PDataListList >> PDataListListList;
 #define PERSONID		"id"
 #define EXAMNUM			"num"
 
+//用户信息
+#define PERSONINFO		"PersonInfo"
+#define NAME			"name"
+#define GENDER			"sex"
+#define BIRTHDAY		"birth"
+#define PHONE			"phone"
+#define PERSON_ID		"id"
+
+typedef struct _PersonInfo {
+	PData m_id;
+	PData m_name;
+	PData m_gender;
+	PData m_phone;
+	PData m_birth;
+
+	_PersonInfo() {
+		m_id	= std::make_shared<std::string>();
+		m_name	= std::make_shared<std::string>();
+		m_gender= std::make_shared<std::string>();
+		m_phone	= std::make_shared<std::string>();
+		m_birth	= std::make_shared<std::string>();
+	}
+}pdPersonInfo;
+
 typedef struct _FreqAndValue {
 	PData m_freq;
 	PDataList m_listValue;

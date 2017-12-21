@@ -183,6 +183,16 @@ bool CParseHealthData::parseJson(Json::Value & jsonRoot)
 			m_heathData.setHealthData(&ecgRespondData);
 		}
 	}
+	else if (jsonRoot[PERSONINFO].isObject())
+	{
+		pdPersonInfo personInfo;
+		bRlt = __parseJson(jsonRoot, TYPE_PERSONINFO, &personInfo);
+		if (bRlt)
+		{
+			m_heathData.setDataType(TYPE_PERSONINFO);
+			m_heathData.setHealthData(&personInfo);
+		}
+	}
 	else
 	{
 		m_heathData.setDataType(TYPE_UNKNOWN);
@@ -291,10 +301,24 @@ bool CParseHealthData::__parseJson(Json::Value & jsonRoot, int iDataType, void *
 		}
 		else
 		{
-			std::cout << "can not find type [" << PPG << "]" << std::endl;
+			std::cout << "can not find type [" << TYPE_ECGREPLY << "]" << std::endl;
 			bRlt = false;
 		}
 		break;
+
+	case TYPE_PERSONINFO:
+		if (jsonRoot[PERSONINFO].isObject())
+		{
+			pdPersonInfo *pData = (pdPersonInfo *)lpOutResult;
+			parsePersonInfo(jsonRoot, *pData);
+		}
+		else
+		{
+			std::cout << "can not find type [" << TYPE_PERSONINFO << "]" << std::endl;
+			bRlt = false;
+		}
+		break;
+
 
 	default:
 		std::cout << "unknown data type [" << iDataType << "]" << std::endl;
@@ -485,6 +509,52 @@ bool CParseHealthData::parseBP(Json::Value &jsonValue, pdBP & bpData)
 	}
 	else
 		*bpData.m_pdHR = jsonValue[BP][HR].asString();
+
+	return bRlt;
+}
+
+bool CParseHealthData::parsePersonInfo(Json::Value &jsonValue, pdPersonInfo & personInfo)
+{
+	bool bRlt = true;
+	if (jsonValue[PERSONINFO][NAME].isNull())		//姓名
+	{
+		std::cout << "[" << PERSONINFO << "]" << "[" << NAME << "]" << " is null" << std::endl;
+		bRlt = false;
+	}
+	else
+		*personInfo.m_name = jsonValue[PERSONINFO][NAME].asString();
+
+	if (jsonValue[PERSONINFO][GENDER].isNull())		//性别
+	{
+		std::cout << "[" << PERSONINFO << "]" << "[" << GENDER << "]" << " is null" << std::endl;
+		bRlt = false;
+	}
+	else
+		*personInfo.m_gender= jsonValue[PERSONINFO][GENDER].asString();
+
+	if (jsonValue[PERSONINFO][BIRTHDAY].isNull())		//生日
+	{
+		std::cout << "[" << PERSONINFO << "]" << "[" << BIRTHDAY << "]" << " is null" << std::endl;
+		bRlt = false;
+	}
+	else
+		*personInfo.m_birth = jsonValue[PERSONINFO][BIRTHDAY].asString();
+
+	if (jsonValue[PERSONINFO][PHONE].isNull())		//电话
+	{
+		std::cout << "[" << PERSONINFO << "]" << "[" << PHONE << "]" << " is null" << std::endl;
+		bRlt = false;
+	}
+	else
+		*personInfo.m_phone = jsonValue[PERSONINFO][PHONE].asString();
+
+	if (jsonValue[PERSONINFO][PERSONID].isNull())		//id
+	{
+		std::cout << "[" << PERSONINFO << "]" << "[" << PERSONID << "]" << " is null" << std::endl;
+		bRlt = false;
+	}
+	else
+		*personInfo.m_id = jsonValue[PERSONINFO][PERSONID].asString();
 
 	return bRlt;
 }
