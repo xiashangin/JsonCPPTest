@@ -154,7 +154,7 @@ typedef struct _BP {
 
 //ecg预测模块的数据
 #define ECG_HTTP		"ecg"
-#define REPLY_TYPES		"types"
+#define REPLY_TYPES		"typess"
 #define REPLY_PROBS		"probs"
 #define ECG_LENGTH		"length"
 #define ECG_VALUES		"values"

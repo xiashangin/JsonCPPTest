@@ -5,6 +5,7 @@
 #define PACK_OK				0
 #define PACK_INVALIDREPLY	181
 
+#define DATACNT			9000
 
 class CPackHealthData
 {
