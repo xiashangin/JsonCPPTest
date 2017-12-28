@@ -44,12 +44,20 @@ void CHttpClient::sendReq(const std::string &strReqType, const std::string & req
 		return;
 	}
 
+
 	mg_connect_http(&m_mgr, ev_handler, m_strIp.c_str(), HTTPHEADER, req.c_str());
 
 	while (!m_bExitFlag) {
 		mg_mgr_poll(&m_mgr, 1000);
 	}
 	m_bExitFlag = false;
+}
+
+void CHttpClient::removeEvHandler(std::string strReqType)
+{
+	mapHandler::iterator it = m_mapHandler.find(strReqType);
+	if (it != m_mapHandler.end())
+		m_mapHandler.erase(strReqType);
 }
 
 void CHttpClient::ev_handler(struct mg_connection *nc, int ev, void *ev_data)

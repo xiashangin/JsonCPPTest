@@ -11,7 +11,7 @@
 
 #define TYPE_PERSONINFO	160
 
-#define TYPE_ECGREPLY	170
+#define TYPE_ECGREPLY	165
 
 #include <queue>
 std::string int2str(const int &int_temp);

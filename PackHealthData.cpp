@@ -1,6 +1,6 @@
 ﻿#include "PackHealthData.h"
+#include <iostream>
 #include <sstream>
-
 
 CPackHealthData::CPackHealthData()
 {
@@ -13,6 +13,8 @@ CPackHealthData::~CPackHealthData()
 
 int CPackHealthData::packECGData(const pdECG & ecgData, std::string & strOutResult)
 {
+	if (!strOutResult.empty())
+		strOutResult.clear();
 	Json::Value root;
 	Json::StreamWriterBuilder builder;
 	builder.settings_["indentation"] = "";
@@ -32,6 +34,60 @@ int CPackHealthData::packECGData(const pdECG & ecgData, std::string & strOutResu
 	return PACK_OK;
 }
 
+int CPackHealthData::packECGReply(const std::vector<std::string> & ecgReply, std::string & strOutResult)
+{
+	if (!strOutResult.empty())
+		strOutResult.clear();
+
+	Json::Value root;
+	Json::StreamWriterBuilder builder;
+	builder.settings_["indentation"] = "";
+	std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+
+	for (int i = 0; i < ecgReply.size(); ++i)
+	{
+		Json::CharReaderBuilder builder;
+		Json::CharReader* reader(builder.newCharReader());
+		Json::Value jsonRoot;
+		JSONCPP_STRING errs;
+		const char* lpStrJson = ecgReply[i].c_str();
+		bool is_ok = reader->parse(lpStrJson, lpStrJson + strlen(lpStrJson), &jsonRoot, &errs);
+		if (!is_ok || errs.size() > 0) //从ifs中读取数据到jsonRoot
+		{
+			std::cout << "parse Json file failed!!! errstr = " << errs << std::endl;
+			return PACK_INVALIDREPLY;
+		}
+		Json::Value types = jsonRoot[ECG_HTTP][REPLY_TYPES];
+		Json::Value probes = jsonRoot[ECG_HTTP][REPLY_PROBS];
+		std::string strTypes, strProbes;
+		for (int i = 0; i < types.size(); ++i)
+		{
+			strTypes.append(types[i].asString());
+			strTypes.append(",");
+		}
+		for (int i = 0; i < probes.size(); ++i)
+		{
+			strProbes.append(probes[i].asString());
+			strProbes.append(",");
+		}
+		strTypes = strTypes.substr(0, strTypes.length() - 1);
+		strProbes = strProbes.substr(0, strProbes.length() - 1);
+		std::string status = jsonRoot[ECG_HTTP][ECG_STATUS].asString();
+		std::string info = jsonRoot[ECG_HTTP][ECG_INFO].asString();
+		
+		Json::Value array;
+		array["index"] = int2str(i + 1);
+		array["total"] = int2str(9000);
+		array["replay"] = status;
+		array["types"] = strTypes;
+		array["probs"] = strProbes;
+		root.append(array);
+	}
+	std::stringstream ss;
+	writer->write(root, &ss);
+	strOutResult = ss.str();
+	return PACK_OK;
+}
 
 bool CPackHealthData::packTimeId(Json::Value &jsonValue, void *lpInHealthData)
 {
