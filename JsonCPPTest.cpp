@@ -7,26 +7,6 @@
 //#include "HttpClient.h"
 #include "DataSpeculation.h"
 #include <iostream>
-
-#include <windows.h>
-
-void evHandler(const int evType, const std::string & strOutResult)
-{
-	std::cout << "got http server evType = " << evType << ", reply..." << strOutResult << std::endl;
-	//CParseHealthData parse;
-	//parse.parseFromString(strOutResult);
-	//int iDataType;
-	//if ((iDataType = parse.getDataType()) == TYPE_ECGREPLY)
-	//{
-	//	pdECGRespond replyData = *(pdECGRespond *)parse.getHealthData();
-	//	if (replyData.m_iStatus == 0)
-	//		for (int i = 0; i < replyData.m_vecProbs.size(); ++i)
-	//			std::cout << "[" << i << "]" << "-->" << replyData.m_vecProbs[i] << std::endl;
-	//	else
-	//		std::cout << "http reply err info --> " << replyData.m_strInfo << std::endl;
-	//}
-}
-
 #include <random>
 #include <functional>
 int main(int argc, char **argv)
@@ -35,29 +15,23 @@ int main(int argc, char **argv)
 	std::default_random_engine engine(rd());
 	std::uniform_int_distribution<> dis(1, 20);
 	auto dice = std::bind(dis, engine);
-	//CHttpClient httpClient("http://192.168.31.227:8766/ecg");
-
-	//httpClient.registerEvHandler("ecg", evHandler);
-
-	//CPackHealthData packUtil;
-	//std::string strECGData;
 	pdECG ecgData;
 
 	*ecgData.m_pdHR = "99";
 	*ecgData.m_fv.m_freq = 100;
-	for (int i = 0; i < 9001; ++i)
+	for (int i = 0; i < 30000; ++i)
 		(*ecgData.m_fv.m_listValue).push_back(std::make_shared<std::string>(int2str(dice())));
 	*ecgData.m_timeId.m_pdTime = "2017-12-18 18:51:44:856";
 	*ecgData.m_timeId.m_pdPersonId = "0000009999";
 
-	CDataSpeculation ecgSpeculation("http://192.168.31.227:8766/ecg");
-	std::string strRlt = ecgSpeculation.ecgSpeculation(ecgData);
-	std::cout << strRlt << std::endl;
-
-	//packUtil.packECGData(ecgData, strECGData);
-	//std::cout << (*ecgData.m_fv.m_listValue).size();//<< strECGData << std::endl;
-	//httpClient.sendReq("ecg", strECGData);
-
+	CDataSpeculation dataSpeculation("http://192.168.1.20:8766/ecg");
+	std::string strRlt;
+	int iRlt = dataSpeculation.ecgSpeculation(ecgData, strRlt);
+	if(iRlt == 0)
+		std::cout << "got http reply succ-->" << strRlt << std::endl;
+	else
+		std::cout << "got http reply fail-->" << strRlt << 
+			"\niRlt-->" << iRlt << std::endl;
 
 	//CParseHealthData parseUtil;
 	//CJsonUtils parseUtil;
