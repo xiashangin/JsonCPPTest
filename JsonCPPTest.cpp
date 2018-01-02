@@ -17,12 +17,8 @@ int main(int argc, char **argv)
 	auto dice = std::bind(dis, engine);
 	pdECG ecgData;
 
-	*ecgData.m_pdHR = "99";
-	*ecgData.m_fv.m_freq = 100;
-	for (int i = 0; i < 30000; ++i)
+	for (int i = 0; i < 300000; ++i)
 		(*ecgData.m_fv.m_listValue).push_back(std::make_shared<std::string>(int2str(dice())));
-	*ecgData.m_timeId.m_pdTime = "2017-12-18 18:51:44:856";
-	*ecgData.m_timeId.m_pdPersonId = "0000009999";
 
 	CDataSpeculation dataSpeculation("http://192.168.1.20:8766/ecg");
 	std::string strRlt;

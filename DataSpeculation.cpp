@@ -46,26 +46,27 @@ int CDataSpeculation::ecgSpeculation(const pdECG & ecgData, std::string &strOutR
 	int iDataCnt = (ecgData.m_fv.m_listValue)->size();
 	int iDataGroupCnt = iDataCnt / DATACNT;
 	CPackHealthData packUtil;
+	std::shared_ptr<std::string> lpStr0Padding = std::make_shared<std::string>(int2str(0));
 	for (int i = 0; i <= iDataGroupCnt; ++i)
 	{
 		pdECG tmpEcgData;
+		tmpEcgData.m_fv.m_listValue->reserve(DATACNT);
 		PDataListIterator iterBegin = tmpEcgData.m_fv.m_listValue->begin();
 		PDataListIterator insertBegin = ecgData.m_fv.m_listValue->begin() + i * DATACNT;
 		PDataListIterator insertEnd;
-		if (((i + 1) * DATACNT)  > iDataCnt)	//不足9000个的余下数据补0
+		if (((i + 1) * DATACNT) > iDataCnt)	//不足9000个的余下数据补0
 		{
 			int iPaddingNum = (i + 1) * DATACNT - iDataCnt;
 			insertEnd = ecgData.m_fv.m_listValue->end();
 			tmpEcgData.m_fv.m_listValue->insert(iterBegin, insertBegin, insertEnd); 
 			tmpEcgData.m_fv.m_listValue->insert(tmpEcgData.m_fv.m_listValue->end(), iPaddingNum,
-				std::make_shared<std::string>(int2str(0)));
+				lpStr0Padding);
 		}
 		else		//9000个一组
 		{
 			insertEnd = insertBegin + DATACNT;
 			tmpEcgData.m_fv.m_listValue->insert(iterBegin, insertBegin, insertEnd);
 		}
-
 		std::string strEcgData;
 		packUtil.packECGData(tmpEcgData, strEcgData);
 		((CHttpClient *)m_httpClient)->sendReq(ECGSPECULATION, strEcgData);

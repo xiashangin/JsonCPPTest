@@ -22,6 +22,7 @@ public:
 
 	int ecgSpeculation(const pdECG & ecgData, std::string &strOutResult);
 protected:
+
 	void *m_httpClient;
 	std::vector<std::string> m_httpReply;
 	bool m_bConnected;
