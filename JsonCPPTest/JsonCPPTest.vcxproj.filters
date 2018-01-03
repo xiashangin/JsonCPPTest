@@ -45,9 +45,6 @@
     <ClInclude Include="DataSpeculation.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CommonTools.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="JsonCPPTest.cpp">
@@ -72,9 +69,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DataSpeculation.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CommonTools.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

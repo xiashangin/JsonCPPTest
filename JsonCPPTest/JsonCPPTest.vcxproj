@@ -164,7 +164,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CommonTools.h" />
     <ClInclude Include="DataSpeculation.h" />
     <ClInclude Include="healthData.h" />
     <ClInclude Include="HealthDataBase.h" />
@@ -175,7 +174,6 @@
     <ClInclude Include="ParseHealthData.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CommonTools.cpp" />
     <ClCompile Include="DataSpeculation.cpp" />
     <ClCompile Include="HealthDataBase.cpp" />
     <ClCompile Include="HttpClient.cpp" />
